@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const {
-  createNewUser,
-  // authenticatedUser,
-  authenticateUser,
-} = require("./controller");
+const { createNewUser, authenticateUser } = require("./controller");
 const auth = require("./../../middleware/auth");
+const {
+  sendVerificationOTPEmail,
+} = require("./../email_verification/controller");
 
 //protected route
 router.get("/private_data", auth, (req, res) => {
@@ -54,6 +53,7 @@ router.post("/signup", async (req, res) => {
         email,
         password,
       });
+      await sendVerificationOTPEmail(email);
       res.status(200).json(newUser);
     }
   } catch (error) {
